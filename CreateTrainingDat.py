@@ -105,7 +105,7 @@ def extract_fluxes(smartoutput):
                     del d[i][k][50:70]
     return d
 
-def create_initial_h5_file(smartoutput, water_multiplier=1):
+def create_initial_h5_file(smartoutput, water_multiplier=1, outputname='DISORT_Training_Data.h5'):
 
     # Return the data required
     smartout = extract_fluxes(smartoutput)
@@ -180,11 +180,11 @@ def create_initial_h5_file(smartoutput, water_multiplier=1):
         tr_output[i,100:150] = smartout[wav[i]]['rfldn']
         tr_output[i,150:200] = h2o_vmr
 
-    with h5py.File('/gscratch/vsm/gialluca/PostDocPropose/DISORT_Training_Data.h5', 'w') as hf:
+    with h5py.File('/gscratch/vsm/gialluca/PostDocPropose/'+outputname, 'w') as hf:
         hf.create_dataset("IN", data=tr_input, maxshape=(None, 50), chunks=True)
         hf.create_dataset("OUT", data=tr_output, maxshape=(None, 50*4), chunks=True)
 
-def append_to_h5_file(smartoutput, water_multiplier=1):
+def append_to_h5_file(smartoutput, water_multiplier=1, outputname='DISORT_Training_Data.h5'):
 
     # Return the data required
     smartout = extract_fluxes(smartoutput)
@@ -260,7 +260,7 @@ def append_to_h5_file(smartoutput, water_multiplier=1):
         tr_output[i,150:200] = h2o_vmr
 
     # Resize and append to h5 file
-    with h5py.File('/gscratch/vsm/gialluca/PostDocPropose/DISORT_Training_Data.h5', 'a') as hf:
+    with h5py.File('/gscratch/vsm/gialluca/PostDocPropose/'+outputname, 'a') as hf:
         oldinsize = hf['IN'].shape[0]
         newinsize = oldinsize + tr_input.shape[0]
         hf['IN'].resize(newinsize, axis=0)
@@ -370,6 +370,9 @@ def run_one_model(inputs):
     return ['/gscratch/vsm/gialluca/PostDocPropose/outputs/'+identifier+'_output.run', water_multiplier]
 
 
+
+# Create Training Data
+'''
 inputs = [['xp5', 0.5],
           ['x2', 2],
           ['x2p5', 2.5],
@@ -386,3 +389,17 @@ with Pool() as p:
 
 for m in models:
     append_to_h5_file(m[0], m[1])
+'''
+
+# Create 3 testing cases 
+
+inputs = [['xp7', 0.7],
+          ['x3p2', 3.2],
+          ['x5p8', 5.8]]
+
+with Pool() as p:
+    models = p.map(run_one_model, inputs)
+
+create_initial_h5_file(models[0][0], water_multiplier=models[0][1], outputname='DISORT_Testing_Data.h5')
+append_to_h5_file(models[1][0], water_multiplier=models[1][1], outputname='DISORT_Testing_Data.h5')
+append_to_h5_file(models[2][0], water_multiplier=models[2][1], outputname='DISORT_Testing_Data.h5')
