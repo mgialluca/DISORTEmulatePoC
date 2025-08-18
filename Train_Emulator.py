@@ -31,7 +31,7 @@ print('evaluate results:')
 print(results)
 
 # Testing one input emulation to see output shape is correct 
-predicttest = model.predict(x_train[0])
+predicttest = model.predict(x_train[:1])
 print('Input shape: ', x_train[0].shape)
 print('Prediction Shape: ', predicttest.shape)
 
