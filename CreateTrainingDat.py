@@ -335,8 +335,7 @@ def make_smart_runscript(identifier, water_multiplier=1):
         elif len(hold) >= 3:
             if hold[0] == '1' and hold[1] == 'Gas' and hold[2] == 'Code':
                 h2oblok = True
-            else:
-                runscr.write(l)
+            runscr.write(l)
 
         elif len(hold[0].split('SMART')) > 1:
             runscr.write('/gscratch/vsm/gialluca/PostDocPropose/spectra/Earth_'+identifier+'_SMART\n')
@@ -383,7 +382,7 @@ inputs = [['xp5', 0.5],
           ['x4', 4],
           ['x4p5', 4.5],
           ['x5', 5],
-          ['x5.5', 5.5],
+          ['x5p5', 5.5],
           ['x6', 6]]
 
 with Pool() as p:
