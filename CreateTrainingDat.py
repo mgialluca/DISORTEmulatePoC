@@ -372,8 +372,10 @@ def run_one_model(inputs):
 
 
 # Create Training Data
-'''
+
 inputs = [['xp5', 0.5],
+          ['x1', 1],
+          ['x1p5', 1.5],
           ['x2', 2],
           ['x2p5', 2.5],
           ['x3', 3],
@@ -387,9 +389,12 @@ inputs = [['xp5', 0.5],
 with Pool() as p:
     models = p.map(run_one_model, inputs)
 
-for m in models:
-    append_to_h5_file(m[0], m[1])
-'''
+for i,m in enumerate(models):
+    if i == 0:
+        create_initial_h5_file(m[0], water_multiplier=m[1])
+    else:
+        append_to_h5_file(m[0], m[1])
+
 
 # Create 3 testing cases 
 
