@@ -393,7 +393,7 @@ for i,m in enumerate(models):
     if i == 0:
         create_initial_h5_file(m[0], water_multiplier=m[1])
     else:
-        append_to_h5_file(m[0], m[1])
+        append_to_h5_file(m[0], water_multiplier=m[1])
 
 
 # Create 3 testing cases 
