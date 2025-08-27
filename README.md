@@ -13,6 +13,8 @@ In this Repo:
 - `Plot_Test.py` is all of the plotting scripts written to view the results of this PoC. All plots created are available and described below.
 - `degrade_spec_demo.py` is a routine to degrade the resolution of a spectra, contributed by Dr. Tyler Robinson for plotting purposes in this PoC.
 
+**Note:** Because the training and testing data sets were so large, they can not be easily added to GitHub, therefore they are not on this repo. They can be obtained from Megan Gialluca upon request. Additionally, the SMART tool is not included in this repository. 
+
 All of the results of the emulation test can be found in the `EmulationResults/` directory. In any naming cases, emulations 1, 2, and 3 correspond to the water VMR multiplier test cases of 0.7, 3.2, and 5.8 times, respectively. Here are the descriptions for the figures:
 + `SpectraCompare_linear_highres.png` gives the high (native) resolution reflectance spectrum of the water feature in each testing case from the DISORT solution compared to the emulator.
 + `SpectraCompare_linear_lowres.png` gives the lower resolution (R=5000) reflectance spectrum.
@@ -23,7 +25,6 @@ Overall, if you are just looking to see an overview of the performance of the em
 ![Low resolution spectra comparing DISORT solution to the neural network emulation](EmulationResults/SpectraCompare_linear_lowres.png)
 
 It can be seen that the emulator matches the DISORT solution very accurately, the mean squared error for emulations 1, 2, and 3 (0.7, 3.2, and 5.8 times the water VMR) is 5.4e-7, 4.0e-7, and 4.3e-7, respectively. 
-
 
 
 ## References
