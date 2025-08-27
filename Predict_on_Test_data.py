@@ -43,8 +43,8 @@ print(fn-st)
 
 
 # Running on hyak for interactive node yielded runtimes of:
-# 9.3 sec, 8.5 sec, 8.7 sec; avg of 8.8 sec
+# 12.0 sec, 11.6 sec, 12.7 sec; avg of 12.1 sec
 
-# Each DISORT run took 54 min 18 sec
+# Each DISORT run took 35 min 
 
-# Emulation yielded over a 370x speed up
+# Emulation yielded over a 170x speed up
