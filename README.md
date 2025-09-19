@@ -7,7 +7,7 @@ In this proof of concept, I constrain the scope of this emulation to be focused 
 
 In this Repo:
 - `Create_Training_Dat.py` uses the Spectral Mapping Atmospheric Radiative Transfer (SMART) tool (Meadows & Crisp, 1996; Robinson, et al. 2011) as a wrapper to call DISORT (Stamnes, et al. 1988;2000) to generate training and testing data for the neural network. Training data is created for water VMR multipliers of 0.5 through 6 moving by steps of 0.5 (e.g., 1.5, 2, 2.5, 3, etc). Three testing cases are considered in this proof of concept for water VMR multipliers of 0.7, 3.2, and 5.8. All training and testing data is formatted into respective HD5 files to save storage space.
-- `Train_Emulator.py` uses the previously generated training data to train a neural network built with the Keras API in TensorFlow (Chollet, et al. 2015). In this PoC, we use 1 input layer with 50 neurons, two hidden layers with 128 and 256 layers respectively, and 1 output layer with 200 neurons. All activation functions are Rectified Linear Unit (relu), the loss function is mean squared error (mse), and the optimizer is Adam.
+- `Train_Emulator.py` uses the previously generated training data to train a neural network built with the Keras API in TensorFlow (Chollet, et al. 2015). In this PoC, we use 1 input layer with 50 neurons, two hidden layers with 128 and 256 layers respectively, and 1 output layer with 200 neurons. All activation functions are Rectified Linear Unit (relu) (Householder, 1941), the loss function is mean squared error (mse), and the optimizer is Adam.
 - `Version1.keras` is the trained emulator created with the two previously described scripts.
 - `Predict_on_Test_data.py` creates predictions with the trained emulator on the testing data.
 - `Plot_Test.py` is all of the plotting scripts written to view the results of this PoC. All plots created are available and described below.
@@ -24,7 +24,7 @@ All of the results of the emulation test can be found in the `EmulationResults/`
 Overall, if you are just looking to see an overview of the performance of the emulator in this PoC, here is the comparison of the emulator to the DISORT solution for the low resolution reflectance spectra in all testing cases:
 ![Low resolution spectra comparing DISORT solution to the neural network emulation](EmulationResults/SpectraCompare_linear_lowres.png)
 
-It can be seen that the emulator matches the DISORT solution very accurately, the mean squared error for emulations 1, 2, and 3 (0.7, 3.2, and 5.8 times the water VMR) is 5.4e-7, 4.0e-7, and 4.3e-7, respectively. 
+It can be seen that the emulator matches the DISORT solution very accurately, the mean squared error for emulations 1, 2, and 3 (0.7, 3.2, and 5.8 times the water VMR) is 7.3e-4, 6.3e-4, and 6.6e-4, respectively. 
 
 
 ## References
@@ -33,3 +33,4 @@ It can be seen that the emulator matches the DISORT solution very accurately, th
 [3] Stamnes, K., Tsay, S. C., Wiscombe, W., & Jayaweera, K. (1988). Applied optics, 27(12), 2502-2509.
 [4] Stamnes, K., Tsay, S. C., Wiscombe, W., & Laszlo, I. (2000). DISORT, a general-purpose Fortran program for discrete-ordinate-method radiative transfer in scattering and emitting layered media: documentation of methodology.
 [5] Chollet, Francois and others. (2015). https://keras.io/
+[6] Householder, A. S. (1941). A theory of steady-state activity in nerve-fiber networks: I. Definitions and preliminary lemmas. The bulletin of mathematical biophysics, 3(2), 63-69.
