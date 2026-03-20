@@ -1,7 +1,7 @@
 # DISORTEmulatePoC
 This repository contains all the code and data used by the repo owner (Megan Gialluca) to produce a proof of concept (PoC) that illustrates the ability of a shallow neural network to correctly emulate the line-by-line radiative transfer code DISORT. 
 Please note, this repository has not been created with the express intention of being used by other people, but rather the intention is to provide transparency for those who are interested in how I created this proof of concept. 
-If further work into this area is funded in the future, it is my intention to build a tool that is usable for the general community. 
+If further work into this area is funded in the future, it would be my intention to build a tool that is usable for the general community. 
 
 In this proof of concept, I constrain the scope of this emulation to be focused on fluxes produced in the 1.05 - 1.27 micron wavelength range for the clear-sky Earth's atmosphere in response to changing water concentrations (note the water absorption feature centered at 1.1 microns). Additionally, besides the model of the initial atmosphere, we do not allow photochemical or climate simulations to be rerun when changing the water VMR profile before calling DISORT to generate training data. This decision was primarily to conserve computation time, and lower the amount of training data necessary to produce a successful emulation test, as this is meant to only be a proof of concept for the computational method. When testing changing water concentrations, we explore a single multiplier to the VMR profile in the atmosphere (e.g., 1x, 2x, 3x, etc). 
 
@@ -22,7 +22,7 @@ All of the results of the emulation test can be found in the `EmulationResults/`
 + `WaterVMREmulation[1, 2, or 3].png` give the neural networks attmempt to retrieve the vertical profile of the water mixing ratio in the atmosphere.
 
 Overall, if you are just looking to see an overview of the performance of the emulator in this PoC, here is the comparison of the emulator to the DISORT solution for the low resolution reflectance spectra in all testing cases:
-![Low resolution spectra comparing DISORT solution to the neural network emulation](EmulationResults/SpectraCompare_linear_lowres.png)
+![Low resolution spectra comparing DISORT solution to the neural network emulation](EmulationResults/SpectraCompare_linear_lowres_vers2.png)
 
 It can be seen that the emulator matches the DISORT solution very accurately, the mean squared error for emulations 1, 2, and 3 (0.7, 3.2, and 5.8 times the water VMR) is 7.3e-4, 6.3e-4, and 6.6e-4, respectively. 
 
