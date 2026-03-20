@@ -4,11 +4,19 @@ import h5py
 import pandas
 from astropy.io import ascii
 from degrade_spec_demo import *
+import matplotlib.gridspec as gridspec
 
 pt = ascii.read('../FluxPrintOut_Dev/PT_profile_Baseline.pt')
 p = list(pt['Press'])
 
 disortdat = h5py.File('../DISORT_Testing_Data.h5', 'r')
+
+# Root mean squared Error
+def RMSE(tru, fl):
+    top = np.sum((tru-fl)**2)
+    val = top/len(tru)
+    rmse = np.sqrt(val)
+    return rmse
 
 
 
@@ -283,27 +291,41 @@ def plot_TOAFlup(resol='high'):
 
     #pr1 = em1[:,0]
 
-    fig = plt.figure(figsize=(16,8))
-    ax1 = fig.add_subplot(311)
+    fig = plt.figure(figsize=(16,7.5))
+    '''ax1 = fig.add_subplot(311)
     ax2 = fig.add_subplot(312)
-    ax3 = fig.add_subplot(313)
+    ax3 = fig.add_subplot(313)'''
+
+    gs = gridspec.GridSpec(9, 1, figure=fig)
+
+    # Big subplots (2x height)
+    ax1 = fig.add_subplot(gs[0:2, 0])   # subplot 1 (double height)
+    ax3 = fig.add_subplot(gs[3:5, 0])   # subplot 3 (double height)
+    ax5 = fig.add_subplot(gs[6:8, 0])   # subplot 5 (double height)
+
+    # Small subplots (1x height)
+    ax2 = fig.add_subplot(gs[2, 0])     # subplot 2 (normal height)
+    ax4 = fig.add_subplot(gs[5, 0])     # subplot 4 (normal height)
+    ax6 = fig.add_subplot(gs[8, 0])     # subplot 6 (normal height)
 
     if resol == 'high':
         mask = tru1 > 0
         ax1.plot(wav1[mask], tru1[mask], color='xkcd:red', label='0.7x H2O')
-        mask = em1[:,0] > 0
-        ax1.plot(wav1[mask], em1[:,0][mask], color='xkcd:dark red', linestyle='--', label='Emulation')
+        mask1 = em1[:,0] > 0
+        ax1.plot(wav1[mask1], em1[:,0][mask1], color='xkcd:dark red', linestyle='--', label='Emulation')
+        ax2.plot(wav1[mask & mask1], tru1[mask & mask1]-em1[:,0][mask & mask1], linestyle='', marker='.', color='xkcd:dark red', label='Residuals')
         
         mask = tru2 > 0
-        ax2.plot(wav2[mask], tru2[mask], color='xkcd:orange', label='3.2x H2O')
-        mask = em2[:,0] > 0
-        ax2.plot(wav2[mask], em2[:,0][mask], color='xkcd:dark orange', linestyle='--', label='Emulation')
-        
+        ax3.plot(wav2[mask], tru2[mask], color='xkcd:orange', label='3.2x H2O')
+        mask1 = em2[:,0] > 0
+        ax3.plot(wav2[mask1], em2[:,0][mask1], color='xkcd:dark orange', linestyle='--', label='Emulation')
+        ax4.plot(wav2[mask & mask1], tru2[mask & mask1]-em2[:,0][mask & mask1], linestyle='', marker='.', color='xkcd:dark orange', label='Residuals')
+
         mask = tru3 > 0
-        ax3.plot(wav3[mask], tru3[mask], color='xkcd:blue', label='5.8x H2O')
-        mask = em3[:,0] > 0
-        ax3.plot(wav3[mask], em3[:,0][mask], color='xkcd:dark blue', linestyle='--', label='Emulation')
-        
+        ax5.plot(wav3[mask], tru3[mask], color='xkcd:blue', label='5.8x H2O')
+        mask1 = em3[:,0] > 0
+        ax5.plot(wav3[mask1], em3[:,0][mask1], color='xkcd:dark blue', linestyle='--', label='Emulation')
+        ax6.plot(wav3[mask & mask1], tru3[mask & mask1]-em3[:,0][mask & mask1], linestyle='', marker='.', color='xkcd:dark blue', label='Residuals')
     
     elif resol == 'low':
         newwl = np.linspace(max(wav1[0], wav2[0], wav3[0]), min(wav1[len(wav1)-1], wav2[len(wav2)-1], wav3[len(wav3)-1]), 500)
@@ -362,17 +384,26 @@ def plot_TOAFlup(resol='high'):
         # degrade spectrum
         tru3 = kernel_convol(kern,tru3[mask])
 
-        ax1.plot(lam_lr, tru1, color='xkcd:dark red', label=r'0.7x H$_{2}$O')
-        ax1.plot(lam_lr, fl1, color='xkcd:grey', linestyle=':', label='Emulation')
+        ax1.plot(lam_lr, tru1, color='xkcd:red', alpha=0.5, lw=3, label=r'0.7x H$_{2}$O')
+        ax1.plot(lam_lr, fl1, color='xkcd:black', linestyle=':', lw=2, label='Emulation')
+        ax2.plot(lam_lr, tru1-fl1, color='xkcd:red', linestyle='', marker='.')
+        rmse1 = RMSE(tru1, fl1)
+        ax1.annotate('RMSE = '+"{:.1e}".format(rmse1), (1.22, 0.006), size=20)
 
-        ax2.plot(lam_lr, tru2, color='xkcd:dark orange', label=r'3.2x H$_{2}$O')
-        ax2.plot(lam_lr, fl2, color='xkcd:grey', linestyle=':', label='Emulation')
+        ax3.plot(lam_lr, tru2, color='xkcd:orange', alpha=0.5, lw=3, label=r'3.2x H$_{2}$O')
+        ax3.plot(lam_lr, fl2, color='xkcd:black', linestyle=':', lw=2, label='Emulation')
+        ax4.plot(lam_lr, tru2-fl2, color='xkcd:orange', linestyle='', marker='.')
+        rmse2 = RMSE(tru2, fl2)
+        ax3.annotate('RMSE = '+"{:.1e}".format(rmse2), (1.22, 0.006), size=20)
+        
+        ax5.plot(lam_lr, tru3, color='xkcd:azure', alpha=0.5, lw=3, label=r'5.8x H$_{2}$O')
+        ax5.plot(lam_lr, fl3, color='xkcd:black', linestyle=':', lw=2, label='Emulation')
+        ax6.plot(lam_lr, tru3-fl3, color='xkcd:azure', linestyle='', marker='.')
+        rmse3 = RMSE(tru3, fl3)
+        ax5.annotate('RMSE = '+"{:.1e}".format(rmse3), (1.22, 0.006), size=20)
 
-        ax3.plot(lam_lr, tru3, color='xkcd:dark blue', label=r'5.8x H$_{2}$O')
-        ax3.plot(lam_lr, fl3, color='xkcd:grey', linestyle=':', label='Emulation')
 
-
-    subs=[ax1, ax2, ax3]
+    subs=[ax1, ax2, ax3, ax4, ax5, ax6]
     for ax in subs:
         ax.tick_params(length=6, width=1, labelsize=14)
         ax.tick_params(which='minor', length=4)
@@ -383,18 +414,29 @@ def plot_TOAFlup(resol='high'):
         #ax.set_yscale('log')
         #ax.set_ylim([0.1, 1])
         #ax.invert_yaxis()
-        ax.legend(fontsize=20, frameon=False)
+    
+    for ax in [ax1, ax3, ax5]:
+        ax.legend(fontsize=20, frameon=False, loc='lower left', borderaxespad=0.1)
+
+    for ax in [ax2, ax4, ax6]:
+        ax.set_ylim([-0.0095, 0.003])
+        ax.annotate('Residuals', (1.045, -0.008), size=20)
+
 
     ax1.set_xticklabels([])
     ax2.set_xticklabels([])
+    ax3.set_xticklabels([])
+    ax4.set_xticklabels([])
+    ax5.set_xticklabels([])
 
-    ax3.set_xlabel(r'Wavelength [$\mu$m]', size=20)
-    fig.supylabel('Reflectance', size=20)
+    ax6.set_xlabel(r'Wavelength [$\mu$m]', size=20)
+    fig.supylabel('Reflectance', x=0.001, size=20)
 
     #plt.tight_layout()
-    plt.subplots_adjust(left=0.078, bottom=0.09, right=0.993, top=0.99, wspace=0.2, hspace=0.075)
-    plt.savefig('SpectraCompare_linear_'+resol+'res.png')
+    plt.subplots_adjust(left=0.078, bottom=0.09, right=0.993, top=0.99, wspace=0.2, hspace=0.182)
+    plt.savefig('./EmulationResults/SpectraCompare_linear_'+resol+'res.png')
     plt.show()
+
 
     '''
     fig = plt.figure(figsize=(16,12))
